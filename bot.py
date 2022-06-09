@@ -1,4 +1,6 @@
+import asyncio
 import logging
+import traceback
 
 import discord
 from discord.ext import commands
@@ -15,7 +17,7 @@ import aiosqlite
 bot = commands.Bot("b!", intents=discord.Intents.all())
 
 logging.getLogger("discord").setLevel(logging.WARNING)  # shut up discord
-
+logging.getLogger("aiosqlite").setLevel(logging.WARNING)
 formatting = logging.Formatter("[%(asctime)s] - [%(levelname)s] [%(name)s] %(message)s")
 
 logging.basicConfig(
@@ -25,6 +27,14 @@ logging.basicConfig(
 )
 
 observer = Observer()
+
+
+def get_git_revision_short_hash() -> str:
+    return (
+        subprocess.check_output(["git", "rev-parse", "--short", "HEAD"])
+        .decode("ascii")
+        .strip()
+    )
 
 
 def get_version():
@@ -87,16 +97,26 @@ async def on_ready():
     log.info(f"Discord.py version: {discord.__version__}")
     await bot.wait_until_ready()
     await bot.change_presence(activity=discord.Game(name="b!"))
-    observer.start()
     await bot.tree.sync()
 
 
 async def start():
     async with bot:
+        observer.start()
         await bot.load_extension("src")
         log.info("Loaded extensions")
         bot.db = await aiosqlite.connect("db.sqlite")
+        bot.db.row_factory = aiosqlite.Row
+        get_version()
         await bot.db.execute(open("src/utils/sql/starter.sql", "r").read())
         await bot.db.commit()
         log.info("Database created")
-        await bot.start(os.getenv("BEACH_TOKEN"))
+        await bot.start(os.getenv("BEACH_BOT_TOKEN"))
+
+
+try:
+    asyncio.run(start())
+except KeyboardInterrupt:
+    log.fatal("Keyboard interrupt")
+    asyncio.run(bot.db.close())
+    observer.stop()

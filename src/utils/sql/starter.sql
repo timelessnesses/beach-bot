@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS leveling (
+    user_id BIGINT PRIMARY KEY,
+    xp INTEGER DEFAULT 0,
+    level INTEGER DEFAULT 1,
+    last_level_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
