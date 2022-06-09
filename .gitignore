@@ -163,4 +163,4 @@ cython_debug/
 .env.production
 
 # sqlite database
-.sqlite
+*.sqlite
