@@ -161,3 +161,6 @@ cython_debug/
 
 # dotenv production
 .env.production
+
+# sqlite database
+.sqlite
