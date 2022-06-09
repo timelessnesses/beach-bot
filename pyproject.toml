@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "beach bot"
+version = "0.1.0"
+description = "A beach based bot(?)"
+authors = ["timelessnesses <mooping3roblox@gmail.com>"]
+license = "MPL 2.0"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+"discord.py" = {git = "https://github.com/Rapptz/discord.py"}
+aiohttp = {extras = ["speedups"], version = "^3.8.1"}
+python-dotenv = "^0.20.0"
+aiosqlite = "^0.17.0"
+orjson = "^3.7.2"
+watchdog = "^2.1.8"
+
+[tool.poetry.dev-dependencies]
+isort = "^5.10.1"
+black = "^22.3.0"
+autoflake = "^1.4"
+flake8 = "^4.0.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
